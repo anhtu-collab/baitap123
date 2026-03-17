@@ -32,7 +32,7 @@
                                                 </div>
                                             </form>
                                         </div>
-                                        <a class="tf-button style-1 w208" href="add-product.html"><i
+                                        <a class="tf-button style-1 w208" href="{{ route('admin.product.add') }}"><i
                                                 class="icon-plus"></i>Add new</a>
                                     </div>
                                     <div class="table-responsive">
@@ -66,7 +66,7 @@
                                                         </div>
                                                     </td>
                                                     <td>${{$product->regular_price}}</td>
-                                                    <td>${{$product->sale_Price}}</td>
+                                                    <td>${{$product->sale_price}}</td>
                                                     <td>{{$product->SKU}}</td>
                                                     <td>{{$product->Category->name}}</td>
                                                     <td>{{$product->brand->name}}</td>
@@ -80,14 +80,16 @@
                                                                     <i class="icon-eye"></i>
                                                                 </div>
                                                             </a>
-                                                            <a href="#">
+                                                            <a href="{{ route('admin.product.edit', ['id'=>$product->id]) }}">
                                                                 <div class="item edit">
                                                                     <i class="icon-edit-3"></i>
                                                                 </div>
                                                             </a>
-                                                            <form action="#" method="POST">
-                                                                <div class="item text-danger delete">
-                                                                    <i class="icon-trash-2"></i>
+                                                            <form action="{{route('admin.product.delete', ['id'=>$product->id])}}" method="POST">
+                                                               @csrf
+                                                               @method('DELETE')
+                                                               <div class="item text-danger delete">
+                                                               <i class="icon-trash-2"></i>
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -109,3 +111,25 @@
                             </div>
                         </div>
 @endsection
+@push('scripts')
+<script>
+    $(function(){
+    $(".delete").on('click', function(e){
+        e.preventDefault();
+        var selectedForm = $(this).closest('form');
+        swal({
+            title: "Are you sure?",
+            text: "You want to delete this record?",
+            type: "warning",
+            buttons: ["No", "Yes"],
+            confirmButtonColor: '#dc3545',
+        }).then(function (result) {
+            if (result) {
+                selectedForm.submit();
+            }
+        });
+    });
+});
+
+</script>
+@endpush
