@@ -370,7 +370,6 @@
       <div class="swiper-container background-img js-swiper-slider" data-settings='{"resizeObserver": true}'>
         <div class="swiper-wrapper">
 
-          <!-- ẢNH CHÍNH -->
           <div class="swiper-slide">
             <a href="{{route('shop.product.details',['product_slug'=>$product->slug])}}">
               <img loading="lazy"
@@ -381,44 +380,27 @@
             </a>
           </div>
 
-          <!-- ẢNH PHỤ -->
-          @if($product->images)
-            @foreach(explode(',', $product->images) as $gimg)
-              @if(trim($gimg) != '')
-              <div class="swiper-slide">
-                <img loading="lazy"
-                     src="{{ asset('uploads/products/'.$gimg) }}"
-                     width="330" height="400"
-                     alt="{{$product->name}}"
-                     class="pc__img">
-              </div>
-              @endif
-            @endforeach
-          @endif
 
         </div>
-
-        <!-- NÚT SLIDE -->
-        <span class="pc__img-prev">
-          <svg width="7" height="11">
-            <use href="#icon_prev_sm" />
-          </svg>
-        </span>
-
-        <span class="pc__img-next">
-          <svg width="7" height="11">
-            <use href="#icon_next_sm" />
-          </svg>
-        </span>
-
       </div>
+    @if(Cart::instance('cart')->content()->where('id', $product->id)->count() > 0)
+    <a href="{{ route('cart.index') }}"
+       class="pc__atc btn anim_appear-bottom position-absolute border-0 text-uppercase fw-medium"
+       style="background-color:#ffc;">
+       Go to Cart
+    </a>
+@else
+    <form action="{{ route('cart.add') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id" value="{{ $product->id }}">
+        <input type="hidden" name="quantity" value="1">
+        <input type="hidden" name="name" value="{{ $product->name }}">
+        <input type="hidden" name="price" value="{{ $product->sale_price ? $product->sale_price : $product->regular_price }}">
 
-      <!-- ADD TO CART -->
-      <button
-        class="pc__atc btn anim_appear-bottom position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside"
-        data-aside="cartDrawer">
-        Add To Cart
-      </button>
+        <button type="submit"
+    class="pc__atc btn anim_appear-bottom position-absolute border-0 text-uppercase fw-medium">Add To Cart</button>
+    </form>
+@endif
     </div>
 
     <!-- WISHLIST (ĐÚNG VỊ TRÍ) -->

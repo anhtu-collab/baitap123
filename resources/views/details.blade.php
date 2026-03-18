@@ -30,9 +30,13 @@
                 </div>
                 @endforeach
             </div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-        </div>
+            <div class="swiper-button-prev">
+               <i class="fa fa-chevron-left"></i>
+                 </div>
+              <div class="swiper-button-next">
+                <i class="fa fa-chevron-right"></i>
+                </div>
+                  </div>
     </div>
     {{-- Phần Thumbnail (ảnh nhỏ bên dưới/cạnh) --}}
     <div class="product-single__thumbnail">
@@ -88,17 +92,29 @@
           <div class="product-single__short-desc">
             <p>{{$product->short_description}}</p>
           </div>
-          <form name="addtocart-form" method="post">
-            <div class="product-single__addtocart">
-              <div class="qty-control position-relative">
-                <input type="number" name="quantity" value="1" min="1" class="qty-control__number text-center">
-                <div class="qty-control__reduce">-</div>
-                <div class="qty-control__increase">+</div>
-              </div><!-- .qty-control -->
-              <button type="submit" class="btn btn-primary btn-addtocart js-open-aside" data-aside="cartDrawer">Add to
-                Cart</button>
-            </div>
-          </form>
+   {{-- Thay thế form cũ bằng form này --}}
+   @if(Cart::instance('cart')->content()->where('id', $product->id)->count() > 0)
+    <a href="{{ route('cart.index') }}" class="btn btn-warning mb-3">Go to Cart</a>
+   @else
+<form action="{{ route('cart.add') }}" method="POST">
+    @csrf
+    <div class="product-single__addtocart">
+        <div class="qty-control position-relative">
+            {{-- Ô nhập số lượng --}}
+            <input type="number" name="quantity" value="1" min="1" class="qty-control__number text-center">
+            <div class="qty-control__reduce">-</div>
+            <div class="qty-control__increase">+</div>
+        </div>{{-- Các trường ẩn để gửi dữ liệu sản phẩm --}}
+        <input type="hidden" name="id" value="{{ $product->id }}">
+        <input type="hidden" name="name" value="{{ $product->name }}">
+        <input type="hidden" name="price" value="{{ $product->sale_price ? $product->sale_price : $product->regular_price }}">
+
+        <button type="submit" class="btn btn-primary btn-addtocart m px-5">
+            Add to Cart
+        </button>
+    </div>
+</form>
+@endif
           <div class="product-single__addtolinks">
             <a href="#" class="menu-link menu-link_us-s add-to-wishlist"><svg width="16" height="16" viewBox="0 0 20 20"
                 fill="none" xmlns="http://www.w3.org/2000/svg">
