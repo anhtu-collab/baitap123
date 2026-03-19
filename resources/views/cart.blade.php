@@ -5,21 +5,21 @@
     <section class="shop-checkout container">
       <h2 class="page-title">Cart</h2>
       <div class="checkout-steps">
-        <a href="javacript:void(0)" class="checkout-steps__item active">
+        <a href="javascript:void(0)" class="checkout-steps__item active">
           <span class="checkout-steps__item-number">01</span>
           <span class="checkout-steps__item-title">
             <span>Shopping Bag</span>
             <em>Manage Your Items List</em>
           </span>
         </a>
-        <a href="javacript:void(0)" class="checkout-steps__item">
+        <a href="javascript:void(0)" class="checkout-steps__item">
           <span class="checkout-steps__item-number">02</span>
           <span class="checkout-steps__item-title">
             <span>Shipping and Checkout</span>
             <em>Checkout Your Items List</em>
           </span>
         </a>
-        <a href="javacript:void(0)" class="checkout-steps__item">
+        <a href="javascript:void(0)" class="checkout-steps__item">
           <span class="checkout-steps__item-number">03</span>
           <span class="checkout-steps__item-title">
             <span>Confirmation</span>
@@ -62,11 +62,23 @@
                   <span class="shopping-cart__product-price">{{$item->price}}</span>
                 </td>
                 <td>
-                  <div class="qty-control position-relative">
-                    <input type="number" name="quantity" value="{{$item->qty}}" min="1" class="qty-control__number text-center">
-                    <div class="qty-control__reduce">-</div>
-                    <div class="qty-control__increase">+</div>
-                  </div>
+                  <div class="qty-control d-flex align-items-center">
+
+    <form method="POST" action="{{ route('cart.qty.decrease', ['rowId' => $item->rowId]) }}">
+        @csrf
+        @method('PUT')
+        <button type="submit" class="qty-btn">-</button>
+    </form>
+
+    <input type="text" value="{{ $item->qty }}" readonly class="qty-input">
+
+    <form method="POST" action="{{ route('cart.qty.increase', ['rowId' => $item->rowId]) }}">
+        @csrf
+        @method('PUT')
+        <button type="submit" class="qty-btn">+</button>
+    </form>
+
+</div>
                 </td>
                 <td>
                   <span class="shopping-cart__subtotal">{{$item->subtotal()}}</span>
@@ -109,7 +121,7 @@
                   </tr>
                   <tr>
                     <th>VAT</th>
-                    <td><td>${{ Cart::instance('cart')->tax()}}</td></td>
+                    <td>${{ Cart::instance('cart')->tax()}}</td>
                   </tr>
                   <tr>
                     <th>Total</th>
@@ -127,7 +139,7 @@
         </div>
         @else
         <div class="row">
-           <div class="col-md 12.text-center-center pt-5 bp-5">
+           <div class="col-md 12 text-center-center pt-5 bp-5">
             <p>No item found in your cart</p>
             <a href="{{route('shop.index')}}" class="btn btn-info">Shop Now</a>
         </div>
@@ -137,3 +149,21 @@
     </section>
   </main>
 @endsection
+ 
+@push('javascripts')
+<script>
+  $(function() {
+    // Khi click vào nút tăng
+    $('.qty-control__increase').on('click', function() {
+        $(this).closest('form').submit();
+    });
+
+    // Khi click vào nút giảm
+    $('.qty-control__reduce').on('click', function() {
+        $(this).closest('form').submit();
+    });
+});
+
+</script>
+    
+@endpush

@@ -23,4 +23,23 @@ class CartController extends Controller
         
         return redirect()->back();
     }
+    // Hàm tăng số lượng
+public function increase_cart_quantity($rowId) {
+    // Lấy thông tin sản phẩm từ giỏ hàng bằng rowId [00:01:29]
+    $product = Cart::instance('cart')->get($rowId);
+    $qty = $product->qty + 1; // Tăng lên 1
+    
+    // Cập nhật lại giỏ hàng [00:01:54]
+    Cart::instance('cart')->update($rowId, $qty);
+    return redirect()->back();
+}
+
+// Hàm giảm số lượng
+public function decrease_cart_quantity($rowId) {
+    $product = Cart::instance('cart')->get($rowId);
+    $qty = $product->qty - 1; // Giảm đi 1
+    
+    Cart::instance('cart')->update($rowId, $qty);
+    return redirect()->back();
+}
 }
